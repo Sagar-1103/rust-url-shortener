@@ -3,9 +3,10 @@ use axum::{
 };
 
 mod config;
-mod router;
+mod middlewares;
+mod routes;
 
-use crate::router::create_router;
+use crate::routes::router::create_router;
 use crate::config::env::ENV;
 
 async fn serve(app:Router, port:u16) {
