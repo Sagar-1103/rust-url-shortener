@@ -5,6 +5,8 @@ use axum::{
 mod config;
 mod middlewares;
 mod routes;
+mod handlers;
+mod utils;
 
 use crate::routes::router::create_router;
 use crate::config::env::ENV;
