@@ -5,6 +5,7 @@ use dotenv::dotenv;
 pub struct Env {
     pub port: u16,
     pub cors_origins: Vec<HeaderValue>,
+    pub database_url: String,
 }
 
 impl Env {
@@ -13,6 +14,7 @@ impl Env {
         Env {
             port: optional_env("PORT", "3001").parse().unwrap(),
             cors_origins: required_env("CORS_ORIGINS").split(",").map(|origin| origin.trim().parse().unwrap()).collect(),
+            database_url: required_env("DATABASE_URL")
         }
     } 
 }

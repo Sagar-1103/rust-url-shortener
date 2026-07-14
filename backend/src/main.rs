@@ -7,9 +7,13 @@ mod middlewares;
 mod routes;
 mod handlers;
 mod utils;
+mod state;
+mod db;
 
+use crate::db::connect_db;
 use crate::routes::router::create_router;
 use crate::config::env::ENV;
+use crate::state::AppState;
 
 async fn serve(app:Router, port:u16) {
     let addr = std::net::SocketAddr::from(([127,0,0,1],port));
@@ -21,6 +25,8 @@ async fn serve(app:Router, port:u16) {
 #[tokio::main]
 async fn main() {
     let port = ENV.port;
-    let app = create_router();
+    let db = connect_db().await;
+    let state = AppState { db };
+    let app = create_router(state);
     serve(app, port).await;
 }

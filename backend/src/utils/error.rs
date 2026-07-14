@@ -6,7 +6,7 @@ use crate::utils::response::ApiResponse;
 #[derive(Error,Debug)]
 pub enum ApiError {
     #[error("Internal Server Error")]
-    Internal
+    Internal,
 }
 
 impl ApiError {
