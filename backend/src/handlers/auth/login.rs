@@ -1,10 +1,13 @@
-use crate::utils::{ApiResult, auth::Claims, response::ApiResponse};
+use crate::{config::env::ENV, utils::{ApiResult, auth::Claims, response::ApiResponse}};
 use axum::{Json, http::StatusCode};
 use uuid::Uuid;
-use chrono::{Duration,Utc};
+use chrono::{Utc};
 
 pub async fn login_user() -> ApiResult<String> {
-    let exp = (Utc::now() + Duration::minutes(15)).timestamp() as usize;
+    // find existing user , if user doesnt exist then return
+
+    // generate the access token and the refresh token
+    let exp = (Utc::now() + ENV.token_expiry_duration).timestamp() as usize;
     let claims = Claims {
         user_id: Uuid::new_v4(),
         exp

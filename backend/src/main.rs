@@ -9,6 +9,7 @@ mod handlers;
 mod utils;
 mod state;
 mod db;
+mod entities;
 
 use crate::db::connect_db;
 use crate::routes::router::create_router;
