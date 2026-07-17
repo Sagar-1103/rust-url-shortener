@@ -1,20 +1,24 @@
 use std::{env,sync::LazyLock};
 use axum::http::HeaderValue;
 use dotenv::dotenv;
+use crate::utils::auth::Keys;
 
 pub struct Env {
     pub port: u16,
     pub cors_origins: Vec<HeaderValue>,
     pub database_url: String,
+    pub keys: Keys,
 }
 
 impl Env {
-    pub fn load() -> Env {
+    pub fn load() -> Self {
         dotenv().ok();
+        let jwt_secret = required_env("JWT_SECRET");
         Env {
             port: optional_env("PORT", "3001").parse().unwrap(),
             cors_origins: required_env("CORS_ORIGINS").split(",").map(|origin| origin.trim().parse().unwrap()).collect(),
-            database_url: required_env("DATABASE_URL")
+            database_url: required_env("DATABASE_URL"),
+            keys: Keys::new(jwt_secret),
         }
     } 
 }

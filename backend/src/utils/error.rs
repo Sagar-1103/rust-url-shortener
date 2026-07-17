@@ -7,12 +7,20 @@ use crate::utils::response::ApiResponse;
 pub enum ApiError {
     #[error("Internal Server Error")]
     Internal,
+
+    #[error("Token Creation Error")]
+    TokenCreation,
+
+    #[error("Invalid Token Error")]
+    InvalidToken
 }
 
 impl ApiError {
     pub fn status(&self) -> StatusCode {
         match self {
             ApiError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
+            ApiError::TokenCreation => StatusCode::INTERNAL_SERVER_ERROR,
+            ApiError::InvalidToken => StatusCode::BAD_REQUEST,
         }
     }
 }
