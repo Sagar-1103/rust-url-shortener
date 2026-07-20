@@ -21,7 +21,10 @@ pub enum ApiError {
     NotFound,
 
     #[error("Invalid Credentials")]
-    InvalidCredentials
+    InvalidCredentials,
+
+    #[error("Invalid Refresh Token")]
+    InvalidRefreshToken,
 }
 
 impl ApiError {
@@ -33,6 +36,7 @@ impl ApiError {
             ApiError::UserAlreadyExists => StatusCode::CONFLICT,
             ApiError::InvalidCredentials => StatusCode::UNAUTHORIZED,
             ApiError::NotFound => StatusCode::NOT_FOUND,
+            ApiError::InvalidRefreshToken => StatusCode::UNAUTHORIZED,
         }
     }
 }

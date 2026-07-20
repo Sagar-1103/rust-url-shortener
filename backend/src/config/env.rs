@@ -8,17 +8,24 @@ pub struct Env {
     pub port: u16,
     pub cors_origins: Vec<HeaderValue>,
     pub database_url: String,
-    pub keys: Keys,
-    pub token_expiry_duration: TimeDelta,
+    pub access_token_keys: Keys,
+    pub refresh_token_keys: Keys,
+    pub access_token_expiry: TimeDelta,
+    pub refresh_token_expiry: TimeDelta,
 }
 
 impl Env {
     pub fn load() -> Self {
         dotenv().ok();
-        let jwt_secret = required_env("JWT_SECRET");
-        let token_expiry_hours = optional_env("TOKEN_EXPIRY_HOURS", "24")
+        let access_token_secret = required_env("ACCESS_TOKEN_SECRET");
+        let refresh_token_secret = required_env("REFRESH_TOKEN_SECRET");
+        let access_token_expiry_hours = optional_env("ACCESS_TOKEN_EXPIRY_HOURS", "24")
             .parse::<i64>()
             .unwrap();
+        let refresh_token_expiry_days = optional_env("REFRESH_TOKEN_EXPIRY_DAYS", "15")
+            .parse::<i64>()
+            .unwrap();
+
         Env {
             port: optional_env("PORT", "3001").parse().unwrap(),
             cors_origins: required_env("CORS_ORIGINS")
@@ -26,8 +33,10 @@ impl Env {
                 .map(|origin| origin.trim().parse().unwrap())
                 .collect(),
             database_url: required_env("DATABASE_URL"),
-            keys: Keys::new(jwt_secret),
-            token_expiry_duration: Duration::hours(token_expiry_hours),
+            access_token_keys: Keys::new(access_token_secret),
+            refresh_token_keys: Keys::new(refresh_token_secret),
+            access_token_expiry: Duration::hours(access_token_expiry_hours),
+            refresh_token_expiry: Duration::days(refresh_token_expiry_days),
         }
     }
 }

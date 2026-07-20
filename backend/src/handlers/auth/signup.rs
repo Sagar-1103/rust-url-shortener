@@ -1,6 +1,5 @@
 use axum::{Json, extract::State, http::StatusCode};
-use chrono::Utc;
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter};
 use serde::{Deserialize};
 use argon2::{
     password_hash::{
@@ -11,7 +10,7 @@ use argon2::{
     Argon2,
 };
 
-use crate::{config::env::ENV, entities::{prelude::*, user}, state::AppState, utils::{ApiResult, auth::Claims, error::ApiError, response::ApiResponse}};
+use crate::{ entities::{prelude::*, user}, state::AppState, utils::{ApiResult, auth::{Claims, Tokens}, error::ApiError, response::ApiResponse}};
 
 #[derive(Deserialize)]
 pub struct SignupUserPayload {
@@ -19,7 +18,7 @@ pub struct SignupUserPayload {
     password: String,
 } 
 
-pub async fn signup_user(State(state):State<AppState>, Json(payload):Json<SignupUserPayload>) -> ApiResult<String> {
+pub async fn signup_user(State(state):State<AppState>, Json(payload):Json<SignupUserPayload>) -> ApiResult<Tokens> {
 
     let existing_user = User::find().filter(user::Column::Username.eq(payload.username.trim())).one(&state.db).await.map_err(|_| ApiError::Internal)?;
 
@@ -38,18 +37,14 @@ pub async fn signup_user(State(state):State<AppState>, Json(payload):Json<Signup
 
     let user = created_user.insert(&state.db).await.map_err(|_| ApiError::Internal)?;
 
-    let exp = (Utc::now() + ENV.token_expiry_duration).timestamp() as usize;
-
-    let claims = Claims {
-        user_id: user.id,
-        exp,
-    };
-
-    let token_response = Claims::generate_token(&claims);
+    let token_response = Claims::generate_token_pair(user.id);
 
     match token_response {
-        Ok(token) => {
-            let response = ApiResponse::success("User registered successfully", token);
+        Ok(tokens) => {
+            let mut active = user.into_active_model();
+            active.refresh_token = Set(Some(tokens.refresh_token.clone()));
+            active.update(&state.db).await.map_err(|_| ApiError::Internal)?;
+            let response = ApiResponse::success("User registered successfully", tokens);
             Ok((StatusCode::OK,Json(response)))
         },
         Err(err) => {

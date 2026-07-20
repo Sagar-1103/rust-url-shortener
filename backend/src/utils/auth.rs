@@ -1,4 +1,5 @@
 use axum::extract::FromRequestParts;
+use chrono::Utc;
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -26,9 +27,42 @@ pub struct Claims {
     pub exp: usize,
 }
 
+#[derive(Serialize)]
+pub struct Tokens {
+    pub access_token: String,
+    pub refresh_token: String,
+}
+
 impl Claims {
-    pub fn generate_token(&self) -> Result<String, ApiError> {
-        encode(&Header::default(), &self, &ENV.keys.encoding).map_err(|_| ApiError::TokenCreation)
+    pub fn generate_access_token(user_id: Uuid) -> Result<String, ApiError> {
+        let exp = (Utc::now() + ENV.access_token_expiry).timestamp() as usize;
+        let claims = Claims {
+            user_id,
+            exp,
+        };
+        encode(&Header::default(), &claims, &ENV.access_token_keys.encoding).map_err(|_| ApiError::TokenCreation)
+    }
+
+    pub fn generate_refresh_token(user_id: Uuid) -> Result<String, ApiError> {
+        let exp = (Utc::now() + ENV.refresh_token_expiry).timestamp() as usize;
+        let claims = Claims {
+            user_id,
+            exp,
+        };
+        encode(&Header::default(), &claims, &ENV.refresh_token_keys.encoding).map_err(|_| ApiError::TokenCreation)
+    }
+
+    pub fn generate_token_pair(user_id: Uuid) -> Result<Tokens, ApiError> {
+        let access_token = Self::generate_access_token(user_id)?;
+        let refresh_token = Self::generate_refresh_token(user_id)?;
+
+        Ok(Tokens { access_token, refresh_token })
+    }
+
+    pub fn verify_refresh_token(token: &str) -> Result<Claims, ApiError> {
+        decode::<Claims>(token, &ENV.refresh_token_keys.decoding, &Validation::default())
+            .map(|data| data.claims)
+            .map_err(|_| ApiError::InvalidRefreshToken)
     }
 }
 
@@ -50,15 +84,9 @@ where
             .strip_prefix("Bearer ")
             .ok_or(ApiError::InvalidToken)?;
 
-        let token_data = decode::<Claims>(token, &ENV.keys.decoding, &Validation::default())
+        let token_data = decode::<Claims>(token, &ENV.access_token_keys.decoding, &Validation::default())
             .map_err(|_| ApiError::InvalidToken)?;
 
         Ok(token_data.claims)
     }
-}
-
-#[derive(Serialize)]
-pub struct Tokens {
-    pub access_token: String,
-    pub refresh_token: String,
 }
