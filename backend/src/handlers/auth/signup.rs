@@ -49,7 +49,7 @@ pub async fn signup_user(State(state):State<AppState>, Json(payload):Json<Signup
 
     match token_response {
         Ok(token) => {
-            let response = ApiResponse::success("User signed up", token);
+            let response = ApiResponse::success("User registered successfully", token);
             Ok((StatusCode::OK,Json(response)))
         },
         Err(err) => {

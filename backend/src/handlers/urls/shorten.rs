@@ -1,28 +1,26 @@
-use axum::{Json, http::StatusCode};
-use serde::{Serialize,Deserialize};
-use uuid::Uuid;
+use axum::{Json, extract::State, http::StatusCode};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set};
+use serde::{Deserialize};
 
-use crate::utils::{ApiResult, response::ApiResponse};
+use crate::{entities::url::{self, Model}, state::AppState, utils::{ApiResult, auth::Claims, error::ApiError, response::ApiResponse}};
 
 #[derive(Deserialize)]
 pub struct ShortenUrl {
     url: String,
 }
 
-#[derive(Serialize)]
-pub struct Url {
-    code: Uuid,
-    url: String,
-}
+pub async fn shorten_url(claims: Claims,State(state):State<AppState>,Json(payload):Json<ShortenUrl>) -> ApiResult<Model> {
+    let code = nanoid::nanoid!(8);
 
-pub async fn shorten_url(Json(payload):Json<ShortenUrl>) -> ApiResult<Url> {
-    let code = Uuid::new_v4();
-
-    let url = Url {
-        code,
-        url: payload.url
+    let created_url = url::ActiveModel {
+        user_id: Set(claims.user_id),
+        original_url: Set(payload.url),
+        code: Set(code),
+        ..Default::default()
     };
 
-    let response:ApiResponse<Url> = ApiResponse::success("Url Shortened successfully",url);
+    let shortened_url = created_url.insert(&state.db).await.map_err(|_| ApiError::Internal)?;
+
+    let response = ApiResponse::success("Url Shortened successfully",shortened_url);
     Ok((StatusCode::OK,Json(response)))
 }

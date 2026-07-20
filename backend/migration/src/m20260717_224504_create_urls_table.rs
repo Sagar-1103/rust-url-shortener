@@ -20,7 +20,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(Url::Code)
-                            .uuid()
+                            .string()
                             .not_null()
                             .unique_key()
                     )

@@ -11,6 +11,7 @@ pub struct Model {
     #[sea_orm(unique)]
     pub username: String,
     pub password: String,
+    pub refresh_token: Option<String>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
 }

@@ -15,7 +15,13 @@ pub enum ApiError {
     InvalidToken,
 
     #[error("User Already Exists")]
-    UserAlreadyExists
+    UserAlreadyExists,
+
+    #[error("Not Found")]
+    NotFound,
+
+    #[error("Invalid Credentials")]
+    InvalidCredentials
 }
 
 impl ApiError {
@@ -25,6 +31,8 @@ impl ApiError {
             ApiError::TokenCreation => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::InvalidToken => StatusCode::BAD_REQUEST,
             ApiError::UserAlreadyExists => StatusCode::CONFLICT,
+            ApiError::InvalidCredentials => StatusCode::UNAUTHORIZED,
+            ApiError::NotFound => StatusCode::NOT_FOUND,
         }
     }
 }
