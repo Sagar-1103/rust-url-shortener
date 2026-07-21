@@ -9,7 +9,7 @@ import { getFullShortUrl } from "@/lib/utils";
 interface LinkRowProps {
   link: LinkItem;
   onToggleArchive?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string) => Promise<boolean | void> | void;
   onUpdated?: () => void;
 }
 

@@ -19,6 +19,7 @@ import {
 import QRCode from "qrcode";
 import type { LinkItem } from "@/lib/dummy-data";
 import { EditLinkDialog } from "@/components/edit-link-dialog";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import { getFullShortUrl } from "@/lib/utils";
 
 interface LinkDetailsDialogProps {
@@ -26,7 +27,7 @@ interface LinkDetailsDialogProps {
   onClose: () => void;
   link: LinkItem | null;
   onToggleArchive?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string) => Promise<boolean | void> | void;
   onUpdated?: () => void;
 }
 
@@ -41,9 +42,15 @@ export function LinkDetailsDialog({
   const [copied, setCopied] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [editOpen, setEditOpen] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const fullShortUrl = link ? getFullShortUrl(link.shortUrl) : "";
 
+  useEffect(() => {
+    if (!isOpen) {
+      setConfirmDeleteOpen(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (fullShortUrl) {
@@ -61,6 +68,15 @@ export function LinkDetailsDialog({
   }, [fullShortUrl]);
 
   if (!isOpen || !link) return null;
+
+  const handleConfirmDelete = async () => {
+    if (!link || !onDelete) return;
+    const result = await onDelete(link.id);
+    if (result === false) {
+      throw new Error("Failed to delete link. Please try again.");
+    }
+    onClose();
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fullShortUrl);
@@ -298,14 +314,12 @@ export function LinkDetailsDialog({
 
               {onDelete && (
                 <button
-                  onClick={() => {
-                    onDelete(link.id);
-                    onClose();
-                  }}
+                  type="button"
+                  onClick={() => setConfirmDeleteOpen(true)}
                   className="w-full h-10 mt-1 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer border border-destructive/20"
                 >
                   <Trash2 className="size-3.5" />
-                  Delete Link
+                  <span>Delete Link</span>
                 </button>
               )}
             </div>
@@ -322,6 +336,15 @@ export function LinkDetailsDialog({
           onUpdated?.();
           onClose();
         }}
+      />
+
+      <ConfirmDeleteDialog
+        isOpen={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Shortened Link?"
+        description="Are you sure you want to delete this link? This action is permanent and cannot be undone."
+        itemTitle={link.title}
       />
     </>
   );

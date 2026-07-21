@@ -29,10 +29,16 @@ export default function ArchivedPage() {
     fetchLinks();
   }, [fetchLinks]);
 
-  const handleDelete = async (id: string) => {
-    const res = await deleteUrlApi(id);
-    if (res.success) {
-      setLinks((prev) => prev.filter((l) => l.id !== id));
+  const handleDelete = async (id: string): Promise<boolean> => {
+    try {
+      const res = await deleteUrlApi(id);
+      if (res.success) {
+        setLinks((prev) => prev.filter((l) => l.id !== id));
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
     }
   };
 

@@ -35,10 +35,16 @@ export default function DashboardPage() {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
 
-  const handleDelete = async (id: string) => {
-    const res = await deleteUrlApi(id);
-    if (res.success) {
-      fetchDashboardStats();
+  const handleDelete = async (id: string): Promise<boolean> => {
+    try {
+      const res = await deleteUrlApi(id);
+      if (res.success) {
+        await fetchDashboardStats();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
     }
   };
 
