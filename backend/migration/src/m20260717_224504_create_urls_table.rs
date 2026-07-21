@@ -41,6 +41,10 @@ impl MigrationTrait for Migration {
                             .default(0)
                     )
                     .col(
+                        ColumnDef::new(Url::ImageURL)
+                            .string()
+                    )
+                    .col(
                         ColumnDef::new(Url::CreatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
@@ -80,6 +84,7 @@ enum Url {
     Code,
     OriginalUrl,
     UserId,
+    ImageURL,
     ClickCount,
     CreatedAt,
     UpdatedAt,

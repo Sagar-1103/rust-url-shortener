@@ -32,7 +32,6 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(User::RefreshToken)
                             .string()
-        
                     )
                     .col(
                         ColumnDef::new(User::CreatedAt)

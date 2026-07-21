@@ -23,3 +23,5 @@ password-hash = "0.5"
 rand_core = { version = "0.9", features = ["os_rng"] }
 migration = { path = "migration" } 
 nanoid = "0.5.0"
+reqwest = { version = "0.12", features = ["json"] }
+scraper = "0.19"

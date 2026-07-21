@@ -13,6 +13,7 @@ pub struct Model {
     pub original_url: String,
     pub user_id: Uuid,
     pub click_count: i32,
+    pub image_url: Option<String>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
 }
