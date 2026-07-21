@@ -10,20 +10,19 @@ export interface LinkItem {
   archived: boolean;
   hasQr: boolean;
   favicon: string;
+  imageUrl?: string | null;
 }
 
 export interface StatData {
   label: string;
   value: string;
-  change: number;
+  change?: number;
   icon: string;
 }
 
 export const dummyStats: StatData[] = [
-  { label: "Total Links", value: "142", change: 12.5, icon: "link" },
-  { label: "Total Clicks", value: "28,922", change: -3.2, icon: "mouse-pointer-click" },
-  { label: "Visitors", value: "6,351", change: 8.7, icon: "users" },
-  { label: "QR Scans", value: "1,204", change: 15.3, icon: "qr-code" },
+  { label: "Total Links", value: "142", icon: "link" },
+  { label: "Total Clicks", value: "28,922", icon: "mouse-pointer-click" },
 ];
 
 export const dummyLinks: LinkItem[] = [

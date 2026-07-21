@@ -2,6 +2,7 @@ pub use sea_orm_migration::prelude::*;
 
 mod m20260717_224502_create_users_table;
 mod m20260717_224504_create_urls_table;
+mod m20260721_013424_update_urls_table;
 
 pub struct Migrator;
 
@@ -11,6 +12,7 @@ impl MigratorTrait for Migrator {
         vec![
             Box::new(m20260717_224502_create_users_table::Migration),
             Box::new(m20260717_224504_create_urls_table::Migration),
+            Box::new(m20260721_013424_update_urls_table::Migration),
         ]
     }
 }

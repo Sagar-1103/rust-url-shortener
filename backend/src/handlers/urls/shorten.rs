@@ -6,7 +6,8 @@ use crate::{entities::{prelude::*,url::{self, Model}}, state::AppState, utils::{
 
 #[derive(Deserialize)]
 pub struct ShortenUrl {
-    url: String,
+    pub url: String,
+    pub title: Option<String>,
 }
 
 pub async fn shorten_url(claims: Claims,State(state):State<AppState>,Json(payload):Json<ShortenUrl>) -> ApiResult<Model> {
@@ -14,6 +15,7 @@ pub async fn shorten_url(claims: Claims,State(state):State<AppState>,Json(payloa
 
     let created_url = url::ActiveModel {
         user_id: Set(claims.user_id),
+        title: Set(payload.title),
         original_url: Set(payload.url),
         code: Set(code),
         ..Default::default()

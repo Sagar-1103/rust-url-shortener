@@ -1,13 +1,75 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Plus, SortAsc } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { Search, Plus } from "lucide-react";
 import { LinkRow } from "@/components/link-row";
-import { dummyLinks } from "@/lib/dummy-data";
+import { LinkItem } from "@/lib/dummy-data";
+import { getUrlsApi, deleteUrlApi, toggleArchiveApi } from "@/lib/api";
+import { mapBackendUrlToLinkItem } from "@/lib/utils";
+import { CreateLinkDialog } from "@/components/create-link-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LinksPage() {
   const [search, setSearch] = useState("");
-  const activeLinks = dummyLinks.filter((l) => !l.archived);
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const fetchLinks = useCallback(async () => {
+    try {
+      const res = await getUrlsApi();
+      if (res.success && res.data) {
+        setLinks(res.data.map(mapBackendUrlToLinkItem));
+      }
+    } catch {
+      // Failed to fetch links
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLinks();
+  }, [fetchLinks]);
+
+  const handleDelete = async (id: string) => {
+    const res = await deleteUrlApi(id);
+    if (res.success) {
+      setLinks((prev) => prev.filter((l) => l.id !== id));
+    }
+  };
+
+  const handleToggleArchive = async (id: string) => {
+    const res = await toggleArchiveApi(id);
+    if (res.success) {
+      fetchLinks();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-4 w-60" />
+          </div>
+          <Skeleton className="h-10 w-28 rounded-xl" />
+        </div>
+
+        <Skeleton className="h-10 w-full rounded-xl" />
+
+        <div className="space-y-3 pt-2">
+          <Skeleton className="h-16 rounded-xl" />
+          <Skeleton className="h-16 rounded-xl" />
+          <Skeleton className="h-16 rounded-xl" />
+          <Skeleton className="h-16 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  const activeLinks = links.filter((l) => !l.archived);
 
   const filteredLinks = activeLinks.filter(
     (l) =>
@@ -26,13 +88,16 @@ export default function LinksPage() {
             Manage all your shortened links in one place.
           </p>
         </div>
-        <button className="h-10 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-medium flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all self-start">
+        <button
+          onClick={() => setIsCreateOpen(true)}
+          className="h-10 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-medium flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all self-start cursor-pointer"
+        >
           <Plus className="size-4" />
           New Link
         </button>
       </div>
 
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -44,14 +109,6 @@ export default function LinksPage() {
             className="w-full h-10 pl-9 pr-4 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
           />
         </div>
-        <button className="h-10 px-4 rounded-xl border border-border bg-card text-sm font-medium text-foreground flex items-center gap-2 hover:bg-muted transition-colors">
-          <Filter className="size-4" />
-          Filter
-        </button>
-        <button className="h-10 px-4 rounded-xl border border-border bg-card text-sm font-medium text-foreground flex items-center gap-2 hover:bg-muted transition-colors">
-          <SortAsc className="size-4" />
-          Sort
-        </button>
       </div>
 
       {/* Links count */}
@@ -62,7 +119,13 @@ export default function LinksPage() {
       {/* Links list */}
       <div className="space-y-2">
         {filteredLinks.map((link) => (
-          <LinkRow key={link.id} link={link} />
+          <LinkRow
+            key={link.id}
+            link={link}
+            onDelete={handleDelete}
+            onToggleArchive={handleToggleArchive}
+            onUpdated={fetchLinks}
+          />
         ))}
       </div>
 
@@ -77,6 +140,12 @@ export default function LinksPage() {
           </p>
         </div>
       )}
+
+      <CreateLinkDialog
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onUrlCreated={fetchLinks}
+      />
     </div>
   );
 }

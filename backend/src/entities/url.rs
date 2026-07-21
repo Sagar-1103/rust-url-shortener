@@ -16,6 +16,8 @@ pub struct Model {
     pub image_url: Option<String>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
+    pub title: Option<String>,
+    pub archived: bool,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

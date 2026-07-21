@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -14,36 +14,46 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/links", label: "Links", icon: Link2 },
-  { href: "/dashboard/qr", label: "QR Codes", icon: QrCode },
   { href: "/dashboard/archived", label: "Archived", icon: Archive },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+
+  const username = user?.username || "User";
+  const initial = username.charAt(0).toUpperCase();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   return (
     <aside
-      className={`${
-        collapsed ? "w-[72px]" : "w-[260px]"
-      } h-screen sticky top-0 flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 shrink-0`}
+      className={`${collapsed ? "w-[72px]" : "w-[260px]"
+        } h-screen sticky top-0 flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 shrink-0`}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-16 border-b border-sidebar-border shrink-0">
-        <div className="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
-          <Scissors className="size-4.5 text-primary-foreground" />
-        </div>
-        {!collapsed && (
-          <div className="animate-in fade-in duration-200">
-            <h1 className="text-base font-bold text-foreground tracking-tight">TrimIt</h1>
-            <p className="text-[10px] text-muted-foreground -mt-0.5">URL Shortener</p>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
+            <Scissors className="size-4.5 text-primary-foreground" />
           </div>
-        )}
+          {!collapsed && (
+            <div className="animate-in fade-in duration-200">
+              <h1 className="text-base font-bold text-foreground tracking-tight">TrimIt</h1>
+            </div>
+          )}
+        </Link>
       </div>
 
       {/* Navigation */}
@@ -58,17 +68,15 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? "bg-primary/10 text-primary dark:bg-primary/15"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              } ${collapsed ? "justify-center px-0" : ""}`}
+              className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                ? "bg-primary/10 text-primary dark:bg-primary/15"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                } ${collapsed ? "justify-center px-0" : ""}`}
               title={collapsed ? item.label : undefined}
             >
               <item.icon
-                className={`size-[18px] shrink-0 transition-colors ${
-                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                }`}
+                className={`size-[18px] shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                  }`}
               />
               {!collapsed && <span>{item.label}</span>}
               {isActive && !collapsed && (
@@ -83,7 +91,7 @@ export function Sidebar() {
       <div className="px-3 py-2 border-t border-sidebar-border">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="w-full flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
@@ -103,17 +111,18 @@ export function Sidebar() {
           className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}
         >
           <div className="size-9 rounded-full bg-primary flex items-center justify-center shrink-0">
-            <span className="text-sm font-bold text-primary-foreground">S</span>
+            <span className="text-sm font-bold text-primary-foreground">{initial}</span>
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 animate-in fade-in duration-200">
-              <p className="text-sm font-semibold text-foreground truncate">Sagar</p>
-              <p className="text-xs text-muted-foreground truncate">sagar@example.com</p>
+              <p className="text-sm font-semibold text-foreground truncate">{username}</p>
+              <p className="text-xs text-muted-foreground truncate">Logged in</p>
             </div>
           )}
           {!collapsed && (
             <button
-              className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              onClick={handleLogout}
+              className="size-8 cursor-pointer rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               title="Sign out"
             >
               <LogOut className="size-4" />
