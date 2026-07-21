@@ -12,6 +12,9 @@ export function getFullShortUrl(shortUrl: string): string {
   if (shortUrl.startsWith("http://") || shortUrl.startsWith("https://")) {
     return shortUrl;
   }
+  if (typeof window !== "undefined") {
+    return `${window.location.protocol}//${shortUrl}`;
+  }
   if (shortUrl.includes("localhost") || shortUrl.includes("127.0.0.1")) {
     return `http://${shortUrl}`;
   }
@@ -26,7 +29,8 @@ export function mapBackendUrlToLinkItem(item: BackendUrl): LinkItem {
     domain = item.original_url;
   }
 
-  const shortUrl = `localhost:3001/${item.code}`;
+  const host = typeof window !== "undefined" ? window.location.host : "localhost:3000";
+  const shortUrl = `${host}/${item.code}`;
 
   return {
     id: item.id,
