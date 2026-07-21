@@ -165,10 +165,10 @@ export async function getProfileApi(): Promise<ApiResponse<UserProfile>> {
 }
 
 // URL API Calls
-export async function shortenUrlApi(url: string): Promise<ApiResponse<BackendUrl>> {
+export async function shortenUrlApi(url: string, title?: string): Promise<ApiResponse<BackendUrl>> {
   return fetchApi<BackendUrl>("/urls/shorten", {
     method: "POST",
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url, title: title || undefined }),
   });
 }
 

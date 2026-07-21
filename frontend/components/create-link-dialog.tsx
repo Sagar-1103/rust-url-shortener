@@ -39,7 +39,7 @@ export function CreateLinkDialog({ isOpen, onClose, onUrlCreated }: CreateLinkDi
 
     setIsLoading(true);
     try {
-      const res = await shortenUrlApi(formattedUrl);
+      const res = await shortenUrlApi(formattedUrl, title.trim() || undefined);
       if (res.success && res.data) {
         const linkData = {
           ...res.data,
