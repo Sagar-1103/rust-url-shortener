@@ -17,7 +17,7 @@ use crate::config::env::ENV;
 use crate::state::AppState;
 
 async fn serve(app:Router, port:u16) {
-    let addr = std::net::SocketAddr::from(([127,0,0,1],port));
+    let addr = std::net::SocketAddr::from(([0,0,0,0],port));
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     println!("Server running on port {port}");
     axum::serve(listener,app).await.unwrap();
