@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Eye, EyeOff, Scissors } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { Logo } from "@/components/logo";
 
 interface AuthDialogProps {
   isOpen: boolean;
@@ -91,9 +92,7 @@ export function AuthDialog({ isOpen, onClose, defaultTab = "login" }: AuthDialog
 
         {/* Header */}
         <div className="pt-8 pb-2 px-8 text-center">
-          <div className="size-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
-            <Scissors className="size-5.5 text-primary-foreground" />
-          </div>
+          <Logo size={48} showText={false} className="justify-center mb-4" />
           <h2 className="text-xl font-bold text-foreground">
             {tab === "login" ? "Welcome back" : "Create an account"}
           </h2>

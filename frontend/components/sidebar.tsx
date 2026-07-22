@@ -8,13 +8,13 @@ import {
   QrCode,
   Archive,
   Settings,
-  Scissors,
   LogOut,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { Logo } from "@/components/logo";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -44,16 +44,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-16 border-b border-sidebar-border shrink-0">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
-            <Scissors className="size-4.5 text-primary-foreground" />
-          </div>
-          {!collapsed && (
-            <div className="animate-in fade-in duration-200">
-              <h1 className="text-base font-bold text-foreground tracking-tight">TrimIt</h1>
-            </div>
-          )}
-        </Link>
+        <Logo size={36} showText={!collapsed} href="/" />
       </div>
 
       {/* Navigation */}

@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Scissors, LayoutDashboard, LogOut, ChevronDown } from "lucide-react";
+import { LayoutDashboard, LogOut, ChevronDown } from "lucide-react";
 import { UrlInput } from "@/components/url-input";
 import { AuthDialog } from "@/components/auth-dialog";
 import { useAuth } from "@/lib/auth-context";
+import { Logo } from "@/components/logo";
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
@@ -23,12 +24,7 @@ export default function LandingPage() {
       {/* Navbar */}
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-foreground flex items-center justify-center">
-              <Scissors className="size-4 text-background" />
-            </div>
-            <span className="text-base font-bold tracking-tight text-foreground">TrimIt</span>
-          </Link>
+          <Logo href="/" size={32} />
 
           <div className="flex items-center gap-3">
             {user ? (

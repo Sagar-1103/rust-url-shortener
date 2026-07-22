@@ -116,17 +116,28 @@ export default function QrPage() {
                     )}
 
                     {/* Center logo area */}
-                    <rect x="60" y="60" width="40" height="40" rx="8" fill="var(--primary)" />
-                    <text
-                      x="80"
-                      y="84"
-                      textAnchor="middle"
-                      fontSize="14"
-                      fontWeight="bold"
-                      fill="var(--primary-foreground)"
-                    >
-                      T
-                    </text>
+                    <clipPath id={`logo-clip-${link.id}`}>
+                      <rect x="62" y="62" width="36" height="36" rx="8" />
+                    </clipPath>
+                    <rect x="60" y="60" width="40" height="40" rx="9" className="fill-background stroke-border" strokeWidth="2" />
+                    <image
+                      href="/logo-light.png"
+                      x="62"
+                      y="62"
+                      width="36"
+                      height="36"
+                      clipPath={`url(#logo-clip-${link.id})`}
+                      className="dark:hidden"
+                    />
+                    <image
+                      href="/logo-dark.png"
+                      x="62"
+                      y="62"
+                      width="36"
+                      height="36"
+                      clipPath={`url(#logo-clip-${link.id})`}
+                      className="hidden dark:block"
+                    />
                   </svg>
                 </div>
               </div>

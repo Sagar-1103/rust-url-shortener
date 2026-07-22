@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { X, Scissors, Link2, ArrowRight, Tag } from "lucide-react";
+import { X, Link2, ArrowRight, Tag } from "lucide-react";
 import { shortenUrlApi, BackendUrl } from "@/lib/api";
 import { mapBackendUrlToLinkItem } from "@/lib/utils";
 import { LinkItem } from "@/lib/dummy-data";
 import { LinkDetailsDialog } from "@/components/link-details-dialog";
+import { Logo } from "@/components/logo";
 
 interface CreateLinkDialogProps {
   isOpen: boolean;
@@ -96,9 +97,7 @@ export function CreateLinkDialog({ isOpen, onClose, onUrlCreated }: CreateLinkDi
 
             {/* Header */}
             <div className="pt-8 pb-3 px-8 text-center">
-              <div className="size-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-3">
-                <Scissors className="size-5.5 text-primary-foreground" />
-              </div>
+              <Logo size={48} showText={false} className="justify-center mb-3" />
               <h2 className="text-xl font-bold text-foreground">Create New Link</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Enter a long URL to shorten and generate a trackable link
