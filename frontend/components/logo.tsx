@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import logoLight from "@/public/logo-light.png";
+import logoDark from "@/public/logo-dark.png";
 
 interface LogoProps {
   className?: string;
@@ -25,20 +27,22 @@ export function Logo({
         style={{ width: size, height: size }}
       >
         <Image
-          src="/logo-light.png"
+          src={logoLight}
           alt="TrimIt Logo"
           width={size}
           height={size}
           className="dark:hidden object-cover size-full"
           priority
+          unoptimized
         />
         <Image
-          src="/logo-dark.png"
+          src={logoDark}
           alt="TrimIt Logo"
           width={size}
           height={size}
           className="hidden dark:block object-cover size-full"
           priority
+          unoptimized
         />
       </div>
       {showText && <span className={textClassName}>TrimIt</span>}
