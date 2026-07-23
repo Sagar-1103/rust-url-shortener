@@ -7,7 +7,7 @@
 ## Application Preview
 
 <div align="center">
-  <iframe width="100%" height="450" src="https://www.youtube.com/embed/cRl7cxT2d8w" title="TrimIt Demo Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px;"></iframe>
+  <video src="https://y8x88r93kn.ufs.sh/f/ykoVjJ0HJaODHwX2bK3DIL6skeD0jyCRzBOUc7Xla1v4rfHp" autoplay loop muted playsinline width="100%" style="border-radius: 8px;"></video>
   <br /><br />
   <a href="https://youtu.be/cRl7cxT2d8w" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/YouTube-Watch%20Demo%20Video-red?style=for-the-badge&logo=youtube" alt="Watch Demo Video on YouTube" />
