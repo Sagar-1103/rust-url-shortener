@@ -2,12 +2,16 @@
 
 **TrimIt** is a modern, high-performance URL shortener and link management platform built with Rust (Axum, SeaORM) and Next.js 16. It enables users to instantly convert long URLs into custom, trackable short links, generate QR codes, automatically fetch webpage metadata, and monitor detailed click analytics through an intuitive dashboard.
 
-**Live Site:** [https://trimit-green.vercel.app](https://trimit-green.vercel.app)
+**Live Site:** [https://trimit-green.vercel.app](https://trimit-green.vercel.app) &nbsp;|&nbsp; **Demo Video:** [https://youtu.be/cRl7cxT2d8w](https://youtu.be/cRl7cxT2d8w)
 
 ## Application Preview
 
 <div align="center">
-  <img src="./frontend/public/preview.png" alt="TrimIt Dashboard" width="100%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <iframe width="100%" height="450" src="https://www.youtube.com/embed/cRl7cxT2d8w" title="TrimIt Demo Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px;"></iframe>
+  <br /><br />
+  <a href="https://youtu.be/cRl7cxT2d8w" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/YouTube-Watch%20Demo%20Video-red?style=for-the-badge&logo=youtube" alt="Watch Demo Video on YouTube" />
+  </a>
 </div>
 
 ---
